@@ -1,0 +1,15 @@
+syntax = "proto3";
+option go_package = "./serviceGrpc/;serviceGrpc";//存放目录和包名
+package demo;
+service DemoService {
+  rpc UnaryCall (DemoRequest) returns (DemoReply);
+//  rpc StreamingFromServer (Request) returns (stream Reply);
+//  rpc StreamingFromClient (stream Request) returns (Reply);
+//  rpc StreamingBothWays (stream Request) returns (stream Reply);
+}
+message DemoRequest {
+    string json = 1;
+};
+message DemoReply {
+    string message  = 1;
+}

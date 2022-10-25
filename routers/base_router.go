@@ -16,5 +16,6 @@ func routerUser(engine *gin.Engine) {
 		con := &controller.UserController{}
 		group.POST("/add", con.Add)
 		group.GET("/get", con.Get)
+		group.GET("/get_grpc", con.GetGrpc)
 	}
 }

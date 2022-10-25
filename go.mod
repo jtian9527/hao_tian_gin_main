@@ -13,6 +13,8 @@ require (
 	github.com/onsi/gomega v1.22.1 // indirect
 	github.com/ugorji/go v1.2.7 // indirect
 	golang.org/x/crypto v0.0.0-20220315160706-3147a52a75dd // indirect
+	google.golang.org/grpc v1.50.1
+	google.golang.org/protobuf v1.28.0
 	gorm.io/driver/mysql v1.4.3
 	gorm.io/gorm v1.24.0
 )

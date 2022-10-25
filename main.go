@@ -10,6 +10,11 @@ import (
 )
 
 
+const (
+	address = "localhost:9091"
+)
+
+
 func main() {
 	conf, err := config.ParseConfig("./config/config.json")
 	if err != nil {
