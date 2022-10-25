@@ -11,7 +11,7 @@ func RegisterRouter(router *gin.Engine) {
 }
 //用户路由
 func routerUser(engine *gin.Engine) {
-	var group = engine.Group("/api/user")
+	var group = engine.Group("/main/api/user")
 	{
 		con := &controller.UserController{}
 		group.POST("/add", con.Add)
