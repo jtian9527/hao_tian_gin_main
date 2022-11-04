@@ -32,5 +32,6 @@ func routerSeller(engine *gin.Engine) {
 	{
 		con := &controller.SellerController{}
 		group.POST("/bind_member", con.BindMember)
+		group.POST("/unbind_member", con.UnbindMember)
 	}
 }

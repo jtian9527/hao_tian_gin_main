@@ -50,11 +50,11 @@ func UpdateUserInfoProfile(params *param2.BindMemberReq, tierName string, bindUi
 	return
 }
 
-func CreateUserInfoProfile(params *param2.BindMemberReq, tierName string, bindUid string, brandUid int64) {
+func CreateUserInfoProfile(params *param2.BindMemberReq, tierName string, bindUid string, brandUid int64) (err error) {
 	var db *gorm.DB
 	db = utils.DBCluster
 	tx := db.Begin()
-	tx.Create(&MemberProfile{
+	err = tx.Create(&MemberProfile{
 		SellerId:  params.SellerId,
 		BuyerUid:  params.BuyerUid,
 		BrandUid:  brandUid,
@@ -71,8 +71,12 @@ func CreateUserInfoProfile(params *param2.BindMemberReq, tierName string, bindUi
 		Ctime:     time.Now().Unix(),
 		Mtime:     time.Now().Unix(),
 		TraceId:   params.TraceId,
-	})
-	tx.Create(&MemberInfo{
+	}).Error
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	err = tx.Create(&MemberInfo{
 		SellerId: params.SellerId,
 		BrandUid: brandUid,
 		BindUid:  bindUid,
@@ -85,7 +89,43 @@ func CreateUserInfoProfile(params *param2.BindMemberReq, tierName string, bindUi
 		Ctime:    time.Now().Unix(),
 		Mtime:    time.Now().Unix(),
 		TraceId:  params.TraceId,
-	})
-	tx.Commit()
-	return
+	}).Error
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	return tx.Commit().Error
+}
+
+func QuitUserInfoProfile(params *param2.UnbindMemberReq) (err error) {
+	var db *gorm.DB
+	db = utils.DBCluster
+	tx := db.Begin()
+	err = tx.Model(&MemberProfile{}).Where("seller_id = ? AND bind_uid = ? AND is_delete=?", params.SellerId, params.BindUid, 0).Updates(MemberProfile{
+		BindUid:  "",
+		BuyerUid: 0,
+		Mtime:    time.Now().Unix(),
+		TraceId:  params.TraceId,
+	}).Error
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	err = tx.Updates(&MemberInfo{}).Where("seller_id = ? AND bind_uid = ? AND is_delete=?", params.SellerId, params.BindUid, 0).Updates(MemberInfo{
+		BindUid: "",
+		Mtime:   time.Now().Unix(),
+		TraceId: params.TraceId,
+	}).Error
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	err = tx.Updates(&PointDetail{}).Where("seller_id = ? AND bind_uid = ? AND is_delete=?", params.SellerId, params.BindUid, 0).Updates(PointDetail{
+		IsDelete: true,
+	}).Error
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	return tx.Commit().Error
 }

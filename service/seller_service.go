@@ -40,10 +40,36 @@ func (r *SellerService) BindMember(ctx *gin.Context, params *param2.BindMemberRe
 	} else {
 		bindUid := CreateBindUid(params.Phone)
 		brandUid := time.Now().Unix()
-		dao.CreateUserInfoProfile(params, tierName, bindUid, brandUid)
+		err = dao.CreateUserInfoProfile(params, tierName, bindUid, brandUid)
+		if err != nil {
+			BindMemberResp.Code = constant.BindFail
+			return BindMemberResp
+		}
+		BindMemberResp.Code = constant.SUCCESS
 		BindMemberResp.BindUid = bindUid
 	}
 	return BindMemberResp
+}
+
+func (r *SellerService) UnbindMember(ctx *gin.Context, params *param2.UnbindMemberReq) *param2.UnbindMemberResp {
+	UnbindMemberResp := &param2.UnbindMemberResp{}
+	sameTraceId := dao.GetMemberProfileDao().GetUserProfileInfobyTraceId(params.TraceId)
+	if len(sameTraceId) == 1 {
+		UnbindMemberResp.Code = constant.RepeatTraceId
+	}
+	userProfile := dao.GetMemberProfileDao().GetUserProfileInfobySellerIDandBindUid(params.SellerId, params.BindUid)
+	if len(userProfile) == 1 {
+		var err = dao.QuitUserInfoProfile(params)
+		if err != nil {
+			UnbindMemberResp.Code = constant.UnBindFail
+			return UnbindMemberResp
+		}
+		UnbindMemberResp.Code = constant.SUCCESS
+	} else {
+		UnbindMemberResp.Code = constant.UnBind
+		return UnbindMemberResp
+	}
+	return UnbindMemberResp
 }
 
 func CreateBindUid(phone int64) (bindUid string) {

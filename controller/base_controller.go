@@ -86,6 +86,8 @@ func GetMsgFromCode(code uint32) (Msg string) {
 		Msg = "json 格式检查失败，请检查"
 	case constant.HadBind:
 		Msg = "已绑定"
+	case constant.RepeatTraceId:
+		Msg = "重复的"
 	default:
 		Msg = "fail"
 	}

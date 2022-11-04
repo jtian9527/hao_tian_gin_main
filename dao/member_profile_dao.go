@@ -44,30 +44,12 @@ func (p *MemberProfileDao) GetUserProfileInfobySellerIDandPhone(sellerId int64, 
 	return
 }
 
-//func (p *MemberProfileDao) UpdateUserInfoProfile(params *param2.BindMemberReq, tierName string, bindUid string) {
-//	var dbInfo *gorm.DB
-//	tx := dbInfo.Begin()
-//	tx.Updates(&MemberProfile{}).Where("seller_id = ? AND phone = ? AND is_delete=?", params.SellerId, params.Phone, 0).
-//		Updates(map[string]interface{}{
-//			"seller_id": params.SellerId,
-//			"buyer_id":  params.BuyerId,
-//			"brand_uid": bindUid,
-//			"buyer_name":params.BuyerName,
-//			"bind_time":time.Now().Unix(),
-//			"phone":params.Phone,
-//			"birthday":params.Birthday,
-//			"email":params.Email,
-//			"area":params.Area,
-//			"extra":params.Extra,
-//			"join_time":params.JoinTime,
-//			"is_delete":0,
-//			"mtime":time.Now().Unix(),
-//			"trace_id":params.TraceId,
-//		})
-//
-//	if dbInfo.Error != nil {
-//		return
-//	}
-//
-//	return
-//}
+func (p *MemberProfileDao) GetUserProfileInfobySellerIDandBindUid(sellerId int64, bindUid string) (memberProfileDao []MemberProfile) {
+	p.gormCluster.First(&memberProfileDao, "seller_id = ? AND bind_uid = ? AND is_delete=?", sellerId, bindUid, 0)
+	return
+}
+
+func (p *MemberProfileDao) GetUserProfileInfobyTraceId(traceId string) (memberProfileDao []MemberProfile) {
+	p.gormCluster.First(&memberProfileDao, "seller_id = ? AND is_delete=?", traceId, 0)
+	return
+}

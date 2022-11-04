@@ -20,18 +20,18 @@ type BindMemberResp struct {
 	Msg     string `json:"msg"`
 }
 
-type UnBindMemberReq struct {
+type UnbindMemberReq struct {
 	SellerId int64  `json:"seller_id" binding:"required"`
 	TraceId  string `json:"trace_id" binding:"required"`
 	Area     string `json:"area" binding:"required"`
 	BindUid  string `json:"bind_uid" binding:"required"`
 }
-type UnBindMemberResp struct {
-	Data *UnBindData `json:"data"`
+type UnbindMemberResp struct {
+	Data *UnbindData `json:"data"`
 	Code uint32      `json:"code"`
 	Msg  string      `json:"msg"`
 }
-type UnBindData struct {
+type UnbindData struct {
 	Point int64 `json:"point"`
 	Tier  int64 `json:"tier"`
 }
