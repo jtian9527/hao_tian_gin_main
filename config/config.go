@@ -1,4 +1,3 @@
-
 package config
 
 import (
@@ -8,12 +7,19 @@ import (
 )
 
 type Config struct {
-	AppName     string         `json:"app_name"`
-	AppModel    string         `json:"app_model"`
-	AppHost     string         `json:"app_host"`
-	AppPort     string         `json:"app_port"`
-	Database    DatabaseConfig `json:"database"`
-	RedisConfig RedisConfig    `json:"redis_config"`
+	AppName     string          `json:"app_name"`
+	AppModel    string          `json:"app_model"`
+	AppHost     string          `json:"app_host"`
+	AppPort     string          `json:"app_port"`
+	Database    DatabaseConfig  `json:"database"`
+	RedisConfig RedisConfig     `json:"redis_config"`
+	TierRule    []*TierRuleItem `json:"tier_rule"`
+}
+
+type TierRuleItem struct {
+	TierName  string `json:"tier_name"`
+	Threshold int    `json:"threshold"`
+	Tier      int    `json:"tier"`
 }
 
 //数据库配置

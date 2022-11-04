@@ -6,7 +6,7 @@
   "database": {
     "driver": "mysql",
     "host": "42.194.223.48",
-    "port": 3306,
+    "port": 53316,
     "user": "root",
     "password": "Mysql@123",
     "db_name": "haotian_test",
@@ -18,5 +18,27 @@
     "port": 6379,
     "password": "12345678",
     "db": 0
-  }
+  },
+  "tier_rule": [
+    {
+      "tier_name": "gold1",
+      "threshold": 0,
+      "tier": 1
+    },
+    {
+      "tier_name": "gold2",
+      "threshold": 1000,
+      "tier": 2
+    },
+    {
+      "tier_name": "gold3",
+      "threshold": 5000,
+      "tier": 3
+    },
+    {
+      "tier_name": "gold4",
+      "threshold": 10000,
+      "tier": 4
+    }
+  ]
 }

@@ -6,6 +6,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"haotian_main/config"
+	"haotian_main/constant"
 	"haotian_main/dao"
 	"haotian_main/serviceGrpc"
 	"haotian_main/utils"
@@ -39,7 +40,7 @@ func (controller *UserController) Get(context *gin.Context) {
 	if err != nil {
 		panic(err)
 	}
-	demo := dao.GetDemoDao().GetDemoDaoName("haotian")
+	demo := dao.GetDemoDao().GetDemoDaoName("xiaotian")
 	val, err := utils.RedisClient.Get(UserKey).Result()
 	if err != nil {
 		panic(err)
@@ -74,4 +75,19 @@ func (controller *UserController) GetGrpc(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{
 		"data": resp.Message,
 	})
+}
+
+
+func GetMsgFromCode(code uint32) (Msg string) {
+	switch code {
+	case constant.SUCCESS:
+		Msg = "success"
+	case constant.CheckJsonFail:
+		Msg = "json 格式检查失败，请检查"
+	case constant.HadBind:
+		Msg = "已绑定"
+	default:
+		Msg = "fail"
+	}
+	return
 }
