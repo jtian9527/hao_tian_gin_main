@@ -8,7 +8,7 @@ import (
 type MemberProfile struct {
 	ID        int64  `json:"id" gorm:"primaryKey"`
 	SellerId  int64  `json:"seller_id"`
-	BuyerId   int64  `json:"buyer_id"`
+	BuyerUid  int64  `json:"buyer_uid"`
 	BrandUid  int64  `json:"brand_uid"`
 	BindUid   string `json:"bind_uid"`
 	BuyerName string `json:"buyer_name"`

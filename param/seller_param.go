@@ -2,7 +2,7 @@ package param
 
 type BindMemberReq struct {
 	SellerId  int64  `json:"seller_id" binding:"required"`
-	BuyerId   int64  `json:"buyer_id" binding:"required"`
+	BuyerUid  int64  `json:"buyer_uid" binding:"required"`
 	TraceId   string `json:"trace_id" binding:"required"`
 	Email     string `json:"email" binding:"required"`
 	Area      string `json:"area" binding:"required"`

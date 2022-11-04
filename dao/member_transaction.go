@@ -3,6 +3,7 @@ package dao
 import (
 	"gorm.io/gorm"
 	param2 "haotian_main/param"
+	"haotian_main/utils"
 	"time"
 )
 
@@ -10,13 +11,13 @@ type MemberTransactionModel interface {
 	UpdateUserInfoProfile(params *param2.BindMemberReq, tierName string, bindUid string, brandUid int64) (err error)
 }
 
-func UpdateUserInfoProfile(params *param2.BindMemberReq, tierName string, bindUid string, brandUid int64){
+func UpdateUserInfoProfile(params *param2.BindMemberReq, tierName string, bindUid string, brandUid int64) {
 	var db *gorm.DB
 	tx := db.Begin()
 	tx.Updates(&MemberProfile{}).Where("seller_id = ? AND phone = ? AND is_delete=?", params.SellerId, params.Phone, 0).
 		Updates(map[string]interface{}{
 			"seller_id":  params.SellerId,
-			"buyer_id":   params.BuyerId,
+			"buyer_id":   params.BuyerUid,
 			"brand_uid":  brandUid,
 			"bind_id":    bindUid,
 			"buyer_name": params.BuyerName,
@@ -49,12 +50,13 @@ func UpdateUserInfoProfile(params *param2.BindMemberReq, tierName string, bindUi
 	return
 }
 
-func CreateUserInfoProfile(params *param2.BindMemberReq, tierName string, bindUid string, brandUid int64){
+func CreateUserInfoProfile(params *param2.BindMemberReq, tierName string, bindUid string, brandUid int64) {
 	var db *gorm.DB
+	db = utils.DBCluster
 	tx := db.Begin()
 	tx.Create(&MemberProfile{
 		SellerId:  params.SellerId,
-		BuyerId:   params.BuyerId,
+		BuyerUid:  params.BuyerUid,
 		BrandUid:  brandUid,
 		BindUid:   bindUid,
 		BuyerName: params.BuyerName,
@@ -73,16 +75,16 @@ func CreateUserInfoProfile(params *param2.BindMemberReq, tierName string, bindUi
 	tx.Create(&MemberInfo{
 		SellerId: params.SellerId,
 		BrandUid: brandUid,
-		BindUid:   bindUid,
-		Point:     0,
-		Tier:      params.Tier,
+		BindUid:  bindUid,
+		Point:    0,
+		Tier:     params.Tier,
 		TierName: tierName,
-		Spending:  params.Spending,
-		Area:      params.Area,
+		Spending: params.Spending,
+		Area:     params.Area,
 		IsDelete: false,
-		Ctime:     time.Now().Unix(),
-		Mtime:     time.Now().Unix(),
-		TraceId:   params.TraceId,
+		Ctime:    time.Now().Unix(),
+		Mtime:    time.Now().Unix(),
+		TraceId:  params.TraceId,
 	})
 	tx.Commit()
 	return
