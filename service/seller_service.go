@@ -10,7 +10,9 @@ import (
 	"time"
 )
 
-type SellerService struct{}
+type SellerService struct{
+	MemberTransaction dao.MemberTransactionImpl `inject:""`
+}
 
 var sellerService = &SellerService{}
 
@@ -32,7 +34,7 @@ func (r *SellerService) BindMember(ctx *gin.Context, params *param2.BindMemberRe
 		if userProfile[0].BindUid == "" {
 			bindUid := CreateBindUid(params.Phone)
 			//这里做好用事务处理
-			dao.UpdateUserInfoProfile(params, tierName, bindUid, userProfile[0].BrandUid)
+			r.MemberTransaction.UpdateUserInfoProfile(params, tierName, bindUid, userProfile[0].BrandUid)
 			BindMemberResp.BindUid = bindUid
 		} else {
 			BindMemberResp.Code = constant.HadBind
@@ -40,7 +42,7 @@ func (r *SellerService) BindMember(ctx *gin.Context, params *param2.BindMemberRe
 	} else {
 		bindUid := CreateBindUid(params.Phone)
 		brandUid := time.Now().Unix()
-		err = dao.CreateUserInfoProfile(params, tierName, bindUid, brandUid)
+		err = r.MemberTransaction.CreateUserInfoProfile(params, tierName, bindUid, brandUid)
 		if err != nil {
 			BindMemberResp.Code = constant.BindFail
 			return BindMemberResp
@@ -59,7 +61,7 @@ func (r *SellerService) UnbindMember(ctx *gin.Context, params *param2.UnbindMemb
 	}
 	userProfile := dao.GetMemberProfileDao().GetUserProfileInfobySellerIDandBindUid(params.SellerId, params.BindUid)
 	if len(userProfile) == 1 {
-		var err = dao.QuitUserInfoProfile(params)
+		var err = r.MemberTransaction.QuitUserInfoProfile(params)
 		if err != nil {
 			UnbindMemberResp.Code = constant.UnBindFail
 			return UnbindMemberResp

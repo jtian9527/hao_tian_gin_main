@@ -9,9 +9,15 @@ import (
 
 type MemberTransactionModel interface {
 	UpdateUserInfoProfile(params *param2.BindMemberReq, tierName string, bindUid string, brandUid int64) (err error)
+	CreateUserInfoProfile(params *param2.BindMemberReq, tierName string, bindUid string, brandUid int64) (err error)
+	QuitUserInfoProfile(params *param2.UnbindMemberReq)(err error)
 }
 
-func UpdateUserInfoProfile(params *param2.BindMemberReq, tierName string, bindUid string, brandUid int64) {
+type MemberTransactionImpl struct {
+
+}
+
+func (m *MemberTransactionImpl)UpdateUserInfoProfile(params *param2.BindMemberReq, tierName string, bindUid string, brandUid int64) (err error){
 	var db *gorm.DB
 	tx := db.Begin()
 	tx.Updates(&MemberProfile{}).Where("seller_id = ? AND phone = ? AND is_delete=?", params.SellerId, params.Phone, 0).
@@ -50,7 +56,7 @@ func UpdateUserInfoProfile(params *param2.BindMemberReq, tierName string, bindUi
 	return
 }
 
-func CreateUserInfoProfile(params *param2.BindMemberReq, tierName string, bindUid string, brandUid int64) (err error) {
+func (m *MemberTransactionImpl)CreateUserInfoProfile(params *param2.BindMemberReq, tierName string, bindUid string, brandUid int64) (err error) {
 	var db *gorm.DB
 	db = utils.DBCluster
 	tx := db.Begin()
@@ -97,7 +103,7 @@ func CreateUserInfoProfile(params *param2.BindMemberReq, tierName string, bindUi
 	return tx.Commit().Error
 }
 
-func QuitUserInfoProfile(params *param2.UnbindMemberReq) (err error) {
+func (m *MemberTransactionImpl) QuitUserInfoProfile(params *param2.UnbindMemberReq) (err error) {
 	var db *gorm.DB
 	db = utils.DBCluster
 	tx := db.Begin()
